@@ -20,7 +20,35 @@ public class UserController {
         return new ArrayList<>(users.values());
     }
 
-    public void validateUser(@Valid User user) throws ValidationException {
+
+    @PostMapping("/users")
+    public User create(@Valid @RequestBody User user) {
+        if (users.containsKey(user.getId())) {
+            log.error("Добавлен существующий пользователь");
+            throw new ValidationException("Пользователь c id " +
+                    user.getId() + " уже зарегистрирован.");
+        } else {
+            validateUser(user);
+            user.setId(users.size() + 1);
+        }
+        users.put(user.getId(), user);
+        log.info("Вы - {}!", "добавили нового пользователя");
+        return user;
+    }
+
+    @PutMapping("/users")
+    public User put(@Valid @RequestBody User user) {
+        if (!users.containsKey(user.getId())) {
+            log.error("Пользователь с id - {} не существует", user.getId());
+            throw new ValidationException("пользователя не существует");
+        }
+        validateUser(user);
+        log.info("Вы - {}!", "обновили текущего пользователя");
+        users.put(user.getId(), user);
+        return user;
+    }
+
+    private void validateUser(@Valid User user) {
         if (user.getEmail() == null || user.getEmail().isEmpty() || !user.getEmail().contains("@")) {
             throw new ValidationException("Неверный формат почты");
         }
@@ -33,33 +61,5 @@ public class UserController {
         if (user.getLogin().contains(" ")) {
             throw new ValidationException("Логин не может содержать пробелы");
         }
-    }
-
-    @PostMapping("/users")
-    public User create(@Valid @RequestBody User user) throws ValidationException {
-        if (users.containsKey(user.getId())) {
-            log.error("Добавлен существующий пользователь");
-            throw new ValidationException("Пользователь c id " +
-                    user.getId() + " уже зарегистрирован.");
-        }
-        else {
-            validateUser(user);
-            user.setId(users.size()+1);
-        }
-        users.put(user.getId(), user);
-        log.info("Вы - {}!", "добавили нового пользователя");
-        return user;
-    }
-
-    @PutMapping("/users")
-    public User put(@Valid @RequestBody User user) throws ValidationException {
-        if (!users.containsKey(user.getId())) {
-            log.error("Такого пользователя нет");
-            throw new ValidationException("пользователя не существует");
-        }
-        validateUser(user);
-        log.info("Вы - {}!", "обновили текущего пользователя");
-        users.put(user.getId(), user);
-        return user;
     }
 }

@@ -4,11 +4,9 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,7 +22,34 @@ public class FilmController {
         return new ArrayList<>(films.values());
     }
 
-    public void validateFilm(@Valid Film film) throws ValidationException {
+    @PostMapping("/films")
+    public Film createFilm(@Valid @RequestBody Film film) {
+        if (films.containsKey(film.getId())) {
+            log.error("Добавлен существующий фильм");
+            throw new ValidationException("Фильм c id " +
+                    film.getId() + " уже зарегистрирован.");
+        } else {
+            validateFilm(film);
+            film.setId(films.size() + 1);
+        }
+        log.info("Вы - {}!", "добавили новый фильм");
+        films.put(film.getId(), film);
+        return film;
+    }
+
+    @PutMapping("/films")
+    public Film putFilm(@Valid @RequestBody Film film) {
+        if (!films.containsKey(film.getId())) {
+            log.error("Такого фильма нет");
+            throw new ValidationException("Фильма не сущесьтвует");
+        }
+        validateFilm(film);
+        films.put(film.getId(), film);
+        log.info("Вы - {}!", "обновили данные для текущего фильма");
+        return film;
+    }
+
+    private void validateFilm(@Valid Film film) {
         if (film.getName() == null || film.getName().isEmpty()) {
             throw new ValidationException("Имя не может быть пустым");
         }
@@ -37,33 +62,5 @@ public class FilmController {
         if (film.getDuration() < 0) {
             throw new ValidationException("Продолжительность должна быть положительной");
         }
-    }
-
-    @PostMapping("/films")
-    public Film createFilm(@Valid @RequestBody Film film) throws ValidationException {
-        if (films.containsKey(film.getId())) {
-            log.error("Добавлен существующий фильм");
-            throw new ValidationException("Фильм c id " +
-                    film.getId() + " уже зарегистрирован.");
-        }
-        else {
-            validateFilm(film);
-            film.setId(films.size()+1);
-        }
-        log.info("Вы - {}!", "добавили новый фильм");
-        films.put(film.getId(), film);
-        return film;
-    }
-
-    @PutMapping("/films")
-    public Film putFilm(@Valid @RequestBody Film film) throws ValidationException {
-        if (!films.containsKey(film.getId())) {
-            log.error("Такого фильма нет");
-            throw new ValidationException("Фильма не сущесьтвует");
-        }
-        validateFilm(film);
-        films.put(film.getId(), film);
-        log.info("Вы - {}!", "обновили данные для текущего фильма");
-        return film;
     }
 }

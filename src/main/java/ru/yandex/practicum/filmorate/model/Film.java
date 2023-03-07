@@ -1,9 +1,11 @@
 package ru.yandex.practicum.filmorate.model;
 
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.PastOrPresent;
 import lombok.Builder;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -17,10 +19,11 @@ public class Film {
     @NotBlank
     private String name;
 
-    @Size(max = 200)
+    @Length(min = 1, max = 200, message = "Описание фильма не должно превышать 200 символов.")
     private String description;
-
+    @PastOrPresent(message = "Дата релиза не может быть в будущем. ")
     private LocalDate releaseDate;
+    @Min(value = 0, message = "Продолжительность фильма не может быть отрицательной.")
     private Integer duration;
     private final Set<Integer> likes = new HashSet<>();
     public Integer getLikesAmount() {

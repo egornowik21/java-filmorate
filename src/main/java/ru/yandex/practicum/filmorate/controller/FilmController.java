@@ -5,10 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -17,27 +14,25 @@ import java.util.Set;
 @Slf4j
 @RequestMapping("/films")
 public class FilmController {
-    private final FilmStorage filmStorage;
     private final FilmService filmService;
     @Autowired
-    public FilmController(FilmStorage filmStorage,FilmService filmService) {
-        this.filmStorage = filmStorage;
+    public FilmController(FilmService filmService) {
         this.filmService = filmService;
     }
 
     @GetMapping
     public ArrayList<Film> findAll() {
-        return filmStorage.findAll();
+        return filmService.findAll();
     }
 
     @PostMapping
     public Film createFilm(@RequestBody Film film) {
-        return filmStorage.createFilm(film);
+        return filmService.createFilm(film);
     }
 
     @PutMapping
     public Film putFilm(@Valid @RequestBody Film film) {
-        return filmStorage.putFilm(film);
+        return filmService.putFilm(film);
     }
 
     @GetMapping("/{id}")
@@ -46,17 +41,17 @@ public class FilmController {
     }
 
     @PutMapping("/{id}/like/{userId}")
-    public void putFilmsLikes(@PathVariable Integer id,@PathVariable Integer userId) {
+    public void putFilmsLikes(@PathVariable Integer id, @PathVariable Integer userId) {
         filmService.addUserLike(id, userId);
     }
 
     @DeleteMapping("/{id}/like/{userId}")
     public void deleteFilmLike(@PathVariable Integer id, @PathVariable Integer userId) {
-        filmService.deleteUserLike(id,userId);
+        filmService.deleteUserLike(id, userId);
     }
 
     @GetMapping("/popular")
-    public Set<Film> getTopFilms(@RequestParam(defaultValue = "10",required = false) Integer count) {
+    public Set<Film> getTopFilms(@RequestParam(defaultValue = "10", required = false) Integer count) {
         return filmService.findTopFilms(count);
     }
 }

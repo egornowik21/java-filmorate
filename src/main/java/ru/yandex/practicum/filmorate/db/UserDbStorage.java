@@ -48,11 +48,11 @@ public class UserDbStorage implements UserDao {
                 "email = ?, name = ? ,login = ? ,birthday = ?" +
                 "where user_id = ?";
         jdbcTemplate.update(sqlQuery
-                , user.getEmail()
-                , user.getName()
-                , user.getLogin()
-                , user.getBirthday()
-                , user.getId());
+                ,user.getEmail()
+                ,user.getName()
+                ,user.getLogin()
+                ,user.getBirthday()
+                ,user.getId());
         return user;
     }
 

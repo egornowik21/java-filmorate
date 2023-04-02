@@ -66,12 +66,12 @@ public class FilmDbStorage implements FilmDao {
                 "name = ?, description = ? ,releaseDate = ? ,duration = ?, raiting_id=?" +
                 "where film_id = ?";
         jdbcTemplate.update(sqlQuery
-                , film.getName()
-                , film.getDescription()
-                , film.getReleaseDate()
-                , film.getDuration()
-                , film.getMpa().getId()
-                , film.getId());
+                ,film.getName()
+                ,film.getDescription()
+                ,film.getReleaseDate()
+                ,film.getDuration()
+                ,film.getMpa().getId()
+                ,film.getId());
         addGenres(film.getId(), film.getGenres());
         if (film.getGenres() != null) {
             film.setGenres(film.getGenres().stream()

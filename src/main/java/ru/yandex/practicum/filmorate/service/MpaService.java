@@ -23,10 +23,10 @@ public class MpaService {
         return mpaDao.findAllMpa();
     }
 
-    public Mpa getMpaById(Integer mpa_id) {
-        if (!mpaDao.mpaTableExists(mpa_id)) {
+    public Mpa getMpaById(Integer mpaid) {
+        if (!mpaDao.mpaTableExists(mpaid)) {
             throw new NotFoundException("Mpa - рейтинг не найден");
         }
-        return mpaDao.getMpaById(mpa_id);
+        return mpaDao.getMpaById(mpaid);
     }
 }

@@ -24,10 +24,10 @@ public class GenreService {
         return genreDao.findAllGenre();
     }
 
-    public Genre getGenreById(int genre_id) {
-        if (!genreDao.genreTableExists(genre_id)) {
+    public Genre getGenreById(int genreid) {
+        if (!genreDao.genreTableExists(genreid)) {
             throw new NotFoundException("Жанр не найден");
         }
-        return genreDao.getGenreById(genre_id);
+        return genreDao.getGenreById(genreid);
     }
 }

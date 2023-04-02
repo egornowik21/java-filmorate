@@ -24,7 +24,7 @@ public class Film {
     private LocalDate releaseDate;
     @Min(value = 0, message = "Продолжительность фильма не может быть отрицательной.")
     private Integer duration;
-    private int raiting_id;
+    private int raitingId;
     private Mpa mpa;
     private Set<Genre> genres;
 }

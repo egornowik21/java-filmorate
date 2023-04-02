@@ -7,7 +7,7 @@ import java.util.List;
 public interface GenreDao {
     public List<Genre> findAllGenre();
 
-    public Genre getGenreById(Integer genre_id);
+    public Genre getGenreById(Integer genreid);
 
-    public boolean genreTableExists(int genre_id);
+    public boolean genreTableExists(int genreid);
 }

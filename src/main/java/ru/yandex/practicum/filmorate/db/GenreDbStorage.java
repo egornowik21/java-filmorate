@@ -25,15 +25,15 @@ public class GenreDbStorage implements GenreDao {
         return jdbcTemplate.query(sqlQuery, this::mapRowToGenre);
     }
 
-    public Genre getGenreById(Integer genre_id) {
+    public Genre getGenreById(Integer genreid) {
         String sqlQuery = "select * from genre where genre_id = ? ";
-        log.info("Выведен жанр по Id - {}", genre_id);
-        return jdbcTemplate.queryForObject(sqlQuery, this::mapRowToGenre, genre_id);
+        log.info("Выведен жанр по Id - {}", genreid);
+        return jdbcTemplate.queryForObject(sqlQuery, this::mapRowToGenre, genreid);
     }
 
-    public boolean genreTableExists(int genre_id) {
+    public boolean genreTableExists(int genreid) {
         String sqlQuery = "select count(*) from genre where genre_id = ?";
-        int result = jdbcTemplate.queryForObject(sqlQuery, Integer.class, genre_id);
+        int result = jdbcTemplate.queryForObject(sqlQuery, Integer.class, genreid);
         return result == 1;
     }
 

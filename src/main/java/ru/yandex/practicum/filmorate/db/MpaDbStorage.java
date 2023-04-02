@@ -25,10 +25,10 @@ public class MpaDbStorage implements MpaDao {
         return jdbcTemplate.query(sqlQuery, this::mapRowToMpa);
     }
 
-    public Mpa getMpaById(Integer mpa_id) {
+    public Mpa getMpaById(Integer mpaid) {
         String sqlQuery = "select * from mpa where mpa_id = ? ";
-        log.info("Выведен рейтинг по Id - {}", mpa_id);
-        return jdbcTemplate.queryForObject(sqlQuery, this::mapRowToMpa, mpa_id);
+        log.info("Выведен рейтинг по Id - {}", mpaid);
+        return jdbcTemplate.queryForObject(sqlQuery, this::mapRowToMpa, mpaid);
     }
 
     public boolean mpaTableExists(int mpaid) {

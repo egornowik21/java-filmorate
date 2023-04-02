@@ -47,12 +47,7 @@ public class UserDbStorage implements UserDao {
         String sqlQuery = "update users set " +
                 "email = ?, name = ? ,login = ? ,birthday = ?" +
                 "where user_id = ?";
-        jdbcTemplate.update(sqlQuery
-                ,user.getEmail()
-                ,user.getName()
-                ,user.getLogin()
-                ,user.getBirthday()
-                ,user.getId());
+        jdbcTemplate.update(sqlQuery, user.getEmail(), user.getName(), user.getLogin(), user.getBirthday(), user.getId());
         return user;
     }
 

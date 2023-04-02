@@ -205,7 +205,7 @@ class FilmorateApplicationTests {
     @Test
     @Order(17)
     public void testExistsFilmTable() {
-            AssertionsForClassTypes.assertThat(filmDao.filmsTableExists(1111)).isFalse();
+        AssertionsForClassTypes.assertThat(filmDao.filmsTableExists(1111)).isFalse();
     }
 
 }

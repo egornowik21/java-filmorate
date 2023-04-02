@@ -18,12 +18,13 @@ import java.util.List;
 public class UserService {
 
     private final UserDao userDao;
+
     @Autowired
     public UserService(UserDao userDao) {
         this.userDao = userDao;
     }
 
-    public List<User>findAll() {
+    public List<User> findAll() {
         log.info("Получен запрос на получение списка пользователей");
         return userDao.findAll();
     }
@@ -33,7 +34,7 @@ public class UserService {
         if (user.getName().isEmpty() || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
-        log.info("Вы добавили нового пользователя - {}",user.getId());
+        log.info("Вы добавили нового пользователя - {}", user.getId());
         return userDao.create(user);
     }
 
@@ -42,7 +43,7 @@ public class UserService {
             throw new NotFoundException("Пользователь не найден");
         }
         validateUser(user);
-        log.info("Вы обновили текущего пользователя - {}",user.getId());
+        log.info("Вы обновили текущего пользователя - {}", user.getId());
         return userDao.put(user);
     }
 
@@ -60,20 +61,21 @@ public class UserService {
             throw new ValidationException("Логин не может содержать пробелы");
         }
     }
+
     public void addFriend(Integer userId, Integer friendId) {
-        if (!userDao.userTableExists(userId)||!userDao.userTableExists(friendId)) {
+        if (!userDao.userTableExists(userId) || !userDao.userTableExists(friendId)) {
             throw new NotFoundException("Пользователь не найден");
         }
         log.info("Вы добавили нового друга");
-        userDao.addFriend(userId,friendId);
+        userDao.addFriend(userId, friendId);
     }
 
     public void deleteFriend(Integer userId, Integer friendId) {
-        if (!userDao.userTableExists(userId)||!userDao.userTableExists(friendId)) {
+        if (!userDao.userTableExists(userId) || !userDao.userTableExists(friendId)) {
             throw new NotFoundException("Пользователь не найден");
         }
         log.info("Вы удалили друга");
-        userDao.deleteFriend(userId,friendId);
+        userDao.deleteFriend(userId, friendId);
     }
 
     public List<User> getFriends(Integer userId) {
@@ -85,18 +87,18 @@ public class UserService {
     }
 
     public List<User> commonFriends(Integer userId1, Integer userId2) {
-        if (!userDao.userTableExists(userId1)||!userDao.userTableExists(userId2)) {
+        if (!userDao.userTableExists(userId1) || !userDao.userTableExists(userId2)) {
             throw new NotFoundException("Пользователь не найден");
         }
         log.info("Выведен список общих друзей");
-        return userDao.commonFriends(userId1,userId2);
+        return userDao.commonFriends(userId1, userId2);
     }
 
     public User getUserById(Integer userId) {
         if (!userDao.userTableExists(userId)) {
             throw new NotFoundException("Пользователь не найден");
         }
-        log.info("Выведен пользователь по Id - {}",userId);
+        log.info("Выведен пользователь по Id - {}", userId);
         return userDao.getUserById(userId);
     }
 }

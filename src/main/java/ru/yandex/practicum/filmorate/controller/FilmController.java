@@ -7,15 +7,15 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+
 
 @RestController
 @Slf4j
 @RequestMapping("/films")
 public class FilmController {
     private final FilmService filmService;
+
     @Autowired
     public FilmController(FilmService filmService) {
         this.filmService = filmService;

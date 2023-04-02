@@ -29,6 +29,7 @@ public class FilmService {
     public List<Film> findAll() {
         return filmDao.findAllFilms();
     }
+
     public Film putFilm(@Valid Film film) {
         if (!filmDao.filmsTableExists(film.getId())) {
             throw new NotFoundException("Фильм не найден");
@@ -43,17 +44,17 @@ public class FilmService {
     }
 
     public void addUserLike(Integer filmid, Integer userId) {
-        if (!filmDao.filmsTableExists(filmid)||!userDao.userTableExists(userId)) {
+        if (!filmDao.filmsTableExists(filmid) || !userDao.userTableExists(userId)) {
             throw new NotFoundException("Фильм не найден");
         }
-        filmDao.addUserLike(filmid,userId);
+        filmDao.addUserLike(filmid, userId);
     }
 
     public void deleteUserLike(Integer filmId, Integer userId) {
-        if (!filmDao.filmsTableExists(filmId)||!userDao.userTableExists(userId)) {
+        if (!filmDao.filmsTableExists(filmId) || !userDao.userTableExists(userId)) {
             throw new NotFoundException("Фильм не найден");
         }
-        filmDao.deleteUserLike(filmId,userId);
+        filmDao.deleteUserLike(filmId, userId);
     }
 
     public List<Film> findTopFilms(Integer count) {
@@ -64,8 +65,9 @@ public class FilmService {
         if (!filmDao.filmsTableExists(filmId)) {
             throw new NotFoundException("Фильм не найден");
         }
-       return filmDao.getFilmById(filmId);
+        return filmDao.getFilmById(filmId);
     }
+
     private void validateFilm(@Valid Film film) {
         if (film.getName() == null || film.getName().isEmpty()) {
             throw new ValidationException("Имя не может быть пустым");

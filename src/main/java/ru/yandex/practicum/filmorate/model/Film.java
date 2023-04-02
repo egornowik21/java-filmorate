@@ -8,7 +8,6 @@ import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -25,8 +24,7 @@ public class Film {
     private LocalDate releaseDate;
     @Min(value = 0, message = "Продолжительность фильма не может быть отрицательной.")
     private Integer duration;
-    private final Set<Integer> likes = new HashSet<>();
-    public Integer getLikesAmount() {
-        return likes.size();
-    }
+    private int raiting_id;
+    private Mpa mpa;
+    private Set<Genre> genres;
 }

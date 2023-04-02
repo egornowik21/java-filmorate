@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -21,7 +22,7 @@ public class FilmController {
     }
 
     @GetMapping
-    public ArrayList<Film> findAll() {
+    public List<Film> findAll() {
         return filmService.findAll();
     }
 
@@ -51,7 +52,7 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    public Set<Film> getTopFilms(@RequestParam(defaultValue = "10", required = false) Integer count) {
+    public List<Film> getTopFilms(@RequestParam(defaultValue = "10", required = false) Integer count) {
         return filmService.findTopFilms(count);
     }
 }

@@ -1,9 +1,10 @@
 package ru.yandex.practicum.filmorate.db;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.daoint.MpaDao;
+import ru.yandex.practicum.filmorate.dao.MpaDao;
 import ru.yandex.practicum.filmorate.model.Mpa;
 
 import java.sql.ResultSet;
@@ -14,7 +15,7 @@ import java.util.List;
 @Component("MpaDbStorageStorage")
 public class MpaDbStorage implements MpaDao {
     private final JdbcTemplate jdbcTemplate;
-
+    @Autowired
     public MpaDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }

@@ -2,11 +2,12 @@ package ru.yandex.practicum.filmorate.db;
 
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.daoint.UserDao;
+import ru.yandex.practicum.filmorate.dao.UserDao;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.sql.*;
@@ -16,7 +17,7 @@ import java.util.List;
 @Component("userDbStorage")
 public class UserDbStorage implements UserDao {
     private final JdbcTemplate jdbcTemplate;
-
+    @Autowired
     public UserDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }

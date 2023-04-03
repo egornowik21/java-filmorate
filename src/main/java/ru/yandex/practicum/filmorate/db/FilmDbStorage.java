@@ -2,14 +2,16 @@ package ru.yandex.practicum.filmorate.db;
 
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.daoint.FilmDao;
+import ru.yandex.practicum.filmorate.dao.FilmDao;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Mpa;
 
 import java.sql.*;
 import java.sql.Date;
@@ -21,19 +23,15 @@ import java.util.stream.Collectors;
 @Component("filmDbStorage")
 public class FilmDbStorage implements FilmDao {
     private final JdbcTemplate jdbcTemplate;
-    private final GenreDbStorage genreDbStorage;
-    private final MpaDbStorage mpaDbStorage;
 
-    public FilmDbStorage(JdbcTemplate jdbcTemplate, GenreDbStorage genreDbStorage, MpaDbStorage mpaDbStorage) {
+    @Autowired
+    public FilmDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.genreDbStorage = genreDbStorage;
-        this.mpaDbStorage = mpaDbStorage;
     }
 
     public List<Film> findAllFilms() {
         log.info("Получен запрос на получение списка фильмов");
-        String sqlQuery = "select f.film_id, f.name, f.description, f.releaseDate, f.duration, f.raiting_id, m.mpa_name " +
-                "from films f join mpa m on f.raiting_id = m.mpa_id ";
+        String sqlQuery = "select * from films f, mpa m where f.raiting_id = m.mpa_id";
         return jdbcTemplate.query(sqlQuery, this::mapRowToFilm);
     }
 
@@ -73,12 +71,12 @@ public class FilmDbStorage implements FilmDao {
                     .collect(Collectors.toCollection(LinkedHashSet::new)));
         }
         return film;
-
     }
 
+
     public Film getFilmById(Integer filmId) {
-        String sqlQuery = "select f.* " +
-                "from films f join mpa m on f.raiting_id = m.mpa_id where f.film_id = ?";
+        String sqlQuery = "select * from films f, mpa m where " +
+                "f.raiting_id = m.mpa_id and f.film_id = ?";
         log.info("Выведен фильм по Id - {}", filmId);
         return jdbcTemplate.queryForObject(sqlQuery, this::mapRowToFilm, filmId);
     }
@@ -148,7 +146,10 @@ public class FilmDbStorage implements FilmDao {
                 .description(resultSet.getString("description"))
                 .releaseDate(resultSet.getDate("releaseDate").toLocalDate())
                 .duration(resultSet.getInt("duration"))
-                .mpa(mpaDbStorage.getMpaById(resultSet.getInt("raiting_id")))
+                .mpa(Mpa.builder()
+                        .id(resultSet.getInt("raiting_id"))
+                        .name(resultSet.getString("mpa_name"))
+                        .build())
                 .genres(getGenresByFilmId(resultSet.getInt("film_id")))
                 .build();
     }

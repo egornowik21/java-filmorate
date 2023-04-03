@@ -1,7 +1,8 @@
 # java-filmorate
 
-## Ссылка на базу данных:
-[DataBase](https://github.com/egornowik21/java-filmorate/blob/main/QuickDBD-export.png)
+## База данных:
+<image src="https://github.com/egornowik21/java-filmorate/blob/main/QuickDBD-export.png">
+
 
 ## Примеры запросов:
 SELECT name\

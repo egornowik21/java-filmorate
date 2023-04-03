@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.daoint;
+package ru.yandex.practicum.filmorate.dao;
 
 import jakarta.validation.Valid;
 import ru.yandex.practicum.filmorate.model.Film;

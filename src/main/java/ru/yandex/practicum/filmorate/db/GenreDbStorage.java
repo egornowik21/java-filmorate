@@ -15,6 +15,7 @@ import java.util.List;
 @Component("GenreDbStorage")
 public class GenreDbStorage implements GenreDao {
     private final JdbcTemplate jdbcTemplate;
+
     @Autowired
     public GenreDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;

@@ -4,53 +4,47 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.dao.UserDao;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
-@Service
+
 @Slf4j
+@Service
 public class UserService {
-    private final UserStorage userStorage;
+
+    private final UserDao userDao;
 
     @Autowired
-    public UserService(UserStorage userStorage) {
-        this.userStorage = userStorage;
+    public UserService(UserDao userDao) {
+        this.userDao = userDao;
     }
 
-    public ArrayList<User> findAll() {
+    public List<User> findAll() {
         log.info("Получен запрос на получение списка пользователей");
-        return new ArrayList<>(userStorage.getUsers().values());
+        return userDao.findAll();
     }
 
     public User create(@Valid User user) {
-        if (userStorage.getUsers().containsKey(user.getId())) {
-            log.error("Добавлен существующий пользователь");
-            throw new ValidationException("Пользователь c id " +
-                    user.getId() + " уже зарегистрирован.");
-        } else {
-            validateUser(user);
-            user.setId(userStorage.getUsers().size() + 1);
+        validateUser(user);
+        if (user.getName().isEmpty() || user.getName().isBlank()) {
+            user.setName(user.getLogin());
         }
-        userStorage.getUsers().put(user.getId(), user);
-        log.info("Вы обновили текущего пользователя - {}",user.getId());
-        return user;
+        log.info("Вы добавили нового пользователя - {}", user.getId());
+        return userDao.create(user);
     }
 
     public User put(@Valid User user) {
-        if (!userStorage.getUsers().containsKey(user.getId())) {
-            log.error("Пользователь с id - {} не существует", user.getId());
-            throw new NotFoundException("пользователя не существует");
+        if (!userDao.userTableExists(user.getId())) {
+            throw new NotFoundException("Пользователь не найден");
         }
         validateUser(user);
-        log.info("Вы обновили текущего пользователя - {}",user.getId());
-        userStorage.getUsers().put(user.getId(), user);
-        return user;
+        log.info("Вы обновили текущего пользователя - {}", user.getId());
+        return userDao.put(user);
     }
 
     private void validateUser(@Valid User user) {
@@ -67,64 +61,44 @@ public class UserService {
             throw new ValidationException("Логин не может содержать пробелы");
         }
     }
+
     public void addFriend(Integer userId, Integer friendId) {
-        if (userId==null || friendId==null || !(userStorage.getUsers().containsKey(userId)) ||
-                !(userStorage.getUsers().containsKey(friendId))) {
-            log.error("Пользователь с id - {} не существует", userId,friendId);
-            throw new NotFoundException("Пользователя не существует");
+        if (!userDao.userTableExists(userId) || !userDao.userTableExists(friendId)) {
+            throw new NotFoundException("Пользователь не найден");
         }
-        User user = userStorage.getUsers().get(userId);
-        User friend = userStorage.getUsers().get(friendId);
-        user.getFriends().add(friendId);
-        friend.getFriends().add(userId);
+        log.info("Вы добавили нового друга");
+        userDao.addFriend(userId, friendId);
     }
 
     public void deleteFriend(Integer userId, Integer friendId) {
-        if (userId==null || friendId==null || !(userStorage.getUsers().containsKey(userId)) ||
-                !(userStorage.getUsers().containsKey(friendId))) {
-            log.error("Пользователь с id - {} не существует", userId,friendId);
-            throw new NotFoundException("Пользователя не существует");
+        if (!userDao.userTableExists(userId) || !userDao.userTableExists(friendId)) {
+            throw new NotFoundException("Пользователь не найден");
         }
-        User user = userStorage.getUsers().get(userId);
-        User friend = userStorage.getUsers().get(friendId);
-        user.getFriends().remove(friendId);
-        friend.getFriends().remove(userId);
+        log.info("Вы удалили друга");
+        userDao.deleteFriend(userId, friendId);
     }
 
-    public List<User> getFrinds(Integer userId) {
-        if (userId==null || !(userStorage.getUsers().containsKey(userId))) {
-            log.error("Пользователь с id - {} не существует", userId);
-            throw new NotFoundException("Пользователя не существует");
+    public List<User> getFriends(Integer userId) {
+        if (!userDao.userTableExists(userId)) {
+            throw new NotFoundException("Пользователь не найден");
         }
-        List<User> friendList = new ArrayList<>();
-        for (Integer id:userStorage.getUserbyId(userId).getFriends()) {
-            friendList.add(userStorage.getUserbyId(id));
-        }
-        return friendList;
+        log.info("Вы получили список друзей");
+        return userDao.getFriends(userId);
     }
 
     public List<User> commonFriends(Integer userId1, Integer userId2) {
-        if (!(userStorage.getUsers().containsKey(userId1)) ||
-                !(userStorage.getUsers().containsKey(userId2)) ||userId1<0 ||userId2<0) {
-            log.error("Пользователь с id - {} не существует", userId1,userId2);
-            throw new NotFoundException("Пользователя не существует");
-        }
-        List<User> commonFrineds = new ArrayList<>();
-        for(Integer friendId: userStorage.getUserbyId(userId1).getFriends()) {
-            if (userStorage.getUserbyId(userId2).getFriends().contains(friendId)) {
-                commonFrineds.add(userStorage.getUserbyId(friendId));
-            }
+        if (!userDao.userTableExists(userId1) || !userDao.userTableExists(userId2)) {
+            throw new NotFoundException("Пользователь не найден");
         }
         log.info("Выведен список общих друзей");
-        return commonFrineds;
+        return userDao.commonFriends(userId1, userId2);
     }
 
     public User getUserById(Integer userId) {
-        if (userId==null || !(userStorage.getUsers().containsKey(userId))) {
-            log.error("Пользователь с id - {} не существует", userId);
-            throw new NotFoundException("Пользователя не существует");
+        if (!userDao.userTableExists(userId)) {
+            throw new NotFoundException("Пользователь не найден");
         }
-        log.info("Выведен пользователь по Id - {}",userId);
-        return userStorage.getUserbyId(userId);
+        log.info("Выведен пользователь по Id - {}", userId);
+        return userDao.getUserById(userId);
     }
 }

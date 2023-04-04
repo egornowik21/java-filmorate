@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.db;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dao.GenreDao;
@@ -15,7 +14,7 @@ import java.util.List;
 @Component("GenreDbStorage")
 public class GenreDbStorage implements GenreDao {
     private final JdbcTemplate jdbcTemplate;
-    @Autowired
+
     public GenreDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
